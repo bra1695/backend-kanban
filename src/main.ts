@@ -2,9 +2,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import * as express from 'express';   // or `import express from 'express'` if tsconfig fixed
+import express = require('express');   // 👈 use require-style import (works always)
 
-const server = express.default(); // 👈 important fix
+const server = express();              // 👈 now callable
 
 async function bootstrap(expressInstance: express.Express) {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressInstance));
@@ -17,9 +17,9 @@ async function bootstrap(expressInstance: express.Express) {
     }),
   );
 
-  await app.init(); // ❗ No app.listen() on Vercel
+  await app.init(); // ❗ no app.listen() in Vercel
 }
 
 bootstrap(server);
 
-export default server; // 👈 exported for Vercel
+export default server;
