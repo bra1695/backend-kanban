@@ -2,7 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import * as express from 'express';
+import express from 'express';
 
 // Express instance for Vercel
 const server = express();
@@ -18,11 +18,10 @@ async function bootstrap(expressInstance: express.Express) {
     }),
   );
 
-  await app.init(); // ❗ do NOT use app.listen on Vercel
+  await app.init(); // ❗ DO NOT use app.listen on Vercel
 }
 
-// bootstrap the express server
 bootstrap(server);
 
-// Export for Vercel serverless
+// Export Express server for Vercel
 export default server;
