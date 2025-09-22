@@ -2,10 +2,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import express from 'express';
+import * as express from 'express';   // or `import express from 'express'` if tsconfig fixed
 
-// Express instance for Vercel
-const server = express();
+const server = express.default(); // 👈 important fix
 
 async function bootstrap(expressInstance: express.Express) {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressInstance));
@@ -18,10 +17,9 @@ async function bootstrap(expressInstance: express.Express) {
     }),
   );
 
-  await app.init(); // ❗ DO NOT use app.listen on Vercel
+  await app.init(); // ❗ No app.listen() on Vercel
 }
 
 bootstrap(server);
 
-// Export Express server for Vercel
-export default server;
+export default server; // 👈 exported for Vercel
