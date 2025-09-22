@@ -1,13 +1,15 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as express from 'express';
+import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { AppModule } from './app.module';
+import * as express from 'express';
 
+// Express instance for Vercel
 const server = express();
 
-async function createNestServer(expressInstance: express.Express) {
+async function bootstrap(expressInstance: express.Express) {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressInstance));
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,18 +17,12 @@ async function createNestServer(expressInstance: express.Express) {
       transform: true,
     }),
   );
-  app.enableCors(); // allow CORS if frontend is separate
-  await app.init(); // init Nest app (do NOT call listen)
-  return app;
+
+  await app.init(); // ❗ do NOT use app.listen on Vercel
 }
 
-// Initialize NestJS once, then export serverless handler
-let nestAppInitialized = false;
+// bootstrap the express server
+bootstrap(server);
 
-export default async function handler(req: any, res: any) {
-  if (!nestAppInitialized) {
-    await createNestServer(server);
-    nestAppInitialized = true;
-  }
-  server(req, res); // now Express handles the request
-}
+// Export for Vercel serverless
+export default server;
