@@ -12,9 +12,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(data: Partial<User>): Promise<User> {
+  async register(data: Partial<User>) {
     const user = new this.userModel(data);
-    return user.save();
+    user.save();
+    const payload = { sub: user._id, username: user.username, role: user.role, type: user.type };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   async login(username: string, password: string) {
