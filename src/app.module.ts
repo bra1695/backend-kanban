@@ -6,6 +6,11 @@ import { UsersModule } from './users/users.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { CommonModule } from './common/common.module';
 import { BoardsModule } from './boards/boards.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
+import { MailService } from './mail/mail.service';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -13,7 +18,9 @@ import { BoardsModule } from './boards/boards.module';
 
     // MongoDB Atlas Connection
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule
+      ],
       useFactory: async (config: ConfigService) => ({
         uri: config.get<string>('MONGO_URI'),
       }),
@@ -25,6 +32,8 @@ import { BoardsModule } from './boards/boards.module';
     OrganizationsModule,
     CommonModule,
     BoardsModule,
+    MailModule,
   ],
+  providers: [MailService],
 })
 export class AppModule {}
