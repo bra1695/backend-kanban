@@ -16,27 +16,69 @@ export class AuthService {
     private mailService: MailService
   ) { }
 
-  async register(data: Partial<User>) {
-    const user = new this.userModel(data);
-    user.save();
-    const payload = { sub: user._id, username: user.username, role: user.role, type: user.type };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+async register(data: Partial<User>) {
+  const user = new this.userModel(data);
+
+  // generate confirmation token (valid for 24h)
+  const token = this.jwtService.sign(
+    { sub: user._id },
+    { secret: process.env.JWT_SECRET, expiresIn: '24h' },
+  );
+
+  user.confirmationToken = token;
+  user.isActive = false;
+  await user.save();
+
+  // send confirmation email
+  await this.mailService.sendAccountConfirmation(user.email, token);
+
+  return { message: 'Registration successful. Please confirm your email.' };
+}
+
+async confirmAccount(token: string) {
+  try {
+    const decoded = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    const user = await this.userModel.findById(decoded.sub);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.isActive) {
+      return { message: 'Account already confirmed' };
+    }
+
+    if (user.confirmationToken !== token) {
+      throw new UnauthorizedException('Invalid confirmation token');
+    }
+
+    user.isActive = true;
+    // @ts-ignore
+    user.confirmationToken = null;
+    await user.save();
+
+    return { message: 'Account confirmed successfully' };
+  } catch (err) {
+    throw new UnauthorizedException('Invalid or expired confirmation token');
+  }
+}
+
+async login(username: string, password: string) {
+  const user = await this.userModel.findOne({ username });
+  if (!user) throw new UnauthorizedException('Invalid credentials');
+
+  if (!user.isActive) {
+    throw new UnauthorizedException('Please confirm your account first');
   }
 
-  async login(username: string, password: string) {
-    const user = await this.userModel.findOne({ username });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) throw new UnauthorizedException('Invalid credentials');
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new UnauthorizedException('Invalid credentials');
-
-    const payload = { sub: user._id, username: user.username, role: user.role, type: user.type };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+  const payload = { sub: user._id, username: user.username, role: user.role, type: user.type };
+  return {
+    access_token: this.jwtService.sign(payload),
+  };
+}
   async forgetPassword(email: string) {
     const user = await this.userService.findByEmail(email);
     if (!user) {

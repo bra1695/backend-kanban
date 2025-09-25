@@ -39,6 +39,12 @@ export class User {
 
   @Prop({ type: Types.ObjectId, ref: 'Organization' })
   organization: Types.ObjectId;
+
+  @Prop({ default: false })
+  isActive: boolean;
+
+  @Prop()
+  confirmationToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

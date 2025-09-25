@@ -27,4 +27,8 @@ export class AuthController {
   ) {
     return this.authService.resetPassword(token, password);
   }
+  @Post('confirm-account')
+async confirmAccount(@Body('token') token: string) {
+  return this.authService.confirmAccount(token);
+}
 }
