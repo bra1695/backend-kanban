@@ -45,6 +45,15 @@ export class User {
 
   @Prop()
   confirmationToken?: string;
+
+  @Prop()
+  image?: string;
+
+  @Prop()
+  address?: string;
+
+  @Prop()
+  postalCode?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

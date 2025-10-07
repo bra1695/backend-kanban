@@ -11,6 +11,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
+import { ProfileModule } from './profile/profile.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { MailModule } from './mail/mail.module';
     CommonModule,
     BoardsModule,
     MailModule,
+    ProfileModule,
+    CloudinaryModule,
   ],
   providers: [MailService],
 })
