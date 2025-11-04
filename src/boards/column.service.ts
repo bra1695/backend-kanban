@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { JwtService } from "@nestjs/jwt";
 import { Model } from "mongoose";
 import { Column, ColumnDocument } from "./schemas/board.schema";
-import { User, UserDocument } from "src/users/schemas/user.schema";
+import { User, UserDocument } from "../users/schemas/user.schema";
 import { CreateColumnDto } from "./dto/create-column.dto";
 import { UpdateColumnDto } from "./dto/update-column.dto";
 

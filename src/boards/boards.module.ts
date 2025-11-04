@@ -3,7 +3,7 @@ import { BoardsService } from './boards.service';
 import { BoardsController } from './boards.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Board, BoardSchema, Column, ColumnSchema, Subtask, SubtaskSchema, Task, TaskSchema } from './schemas/board.schema';
-import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { User, UserSchema } from '../users/schemas/user.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TasksController } from './tasks.controller';

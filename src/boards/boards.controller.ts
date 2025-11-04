@@ -14,8 +14,8 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UseGuards } from '@nestjs/common';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @ApiTags('Boards')
 @ApiBearerAuth()

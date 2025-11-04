@@ -8,7 +8,7 @@ import {
   IsMongoId,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateSubtaskDto } from 'src/boards/dto/create-subtask.dto';
+import { CreateSubtaskDto } from './create-subtask.dto';
 
 export class CreateTaskDto {
   // 🧱 Task title

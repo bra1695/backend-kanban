@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional, ValidateNested, ArrayMinSize, IsMongoId } from 'class-validator';
-import { CreateTaskDto } from 'src/boards/dto/create-task.dto';
+import { CreateTaskDto } from './create-task.dto';
 
 export class CreateColumnDto {
   @IsString()

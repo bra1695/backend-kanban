@@ -12,9 +12,9 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Roles } from "src/common/decorators/roles.decorator";
-import { Role } from "src/common/enums/role.enum";
-import { RolesGuard } from "src/common/guards/roles.guard";
+import { Roles } from "../common/decorators/roles.decorator";
+import { Role } from "../common/enums/role.enum";
+import { RolesGuard } from "../common/guards/roles.guard";
 import { ColumnService } from "./column.service";
 import { CreateColumnDto } from "./dto/create-column.dto";
 import { UpdateColumnDto } from "./dto/update-column.dto";

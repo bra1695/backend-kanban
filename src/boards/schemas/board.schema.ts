@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import slugify from 'slugify';
-import { Organization } from 'src/organizations/schemas/organization.schemas';
-import { User } from 'src/users/schemas/user.schema';
+import { Organization } from '../../organizations/schemas/organization.schemas';
+import { User } from '../../users/schemas/user.schema';
 
 // -------------------- SUBTASK --------------------
 @Schema()

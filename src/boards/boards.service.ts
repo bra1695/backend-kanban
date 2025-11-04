@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Board, BoardDocument } from './schemas/board.schema';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { JwtService } from '@nestjs/jwt';
-import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class BoardsService {

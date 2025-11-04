@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UpdateSubtaskDto } from 'src/boards/dto/update-subtask.dto';
+import { UpdateSubtaskDto } from './update-subtask.dto';
 
 export class UpdateTaskDto {
   // 🧱 Task title

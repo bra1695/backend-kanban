@@ -9,8 +9,8 @@ import { Model, Types } from 'mongoose';
 import { Task, TaskDocument } from 'src/boards/schemas/board.schema';
 import { CreateSubtaskDto } from './dto/create-subtask.dto';
 import { UpdateSubtaskDto } from './dto/update-subtask.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class SubtaskService {

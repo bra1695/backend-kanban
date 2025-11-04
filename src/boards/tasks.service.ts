@@ -10,7 +10,7 @@ import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { Task, TaskDocument } from './schemas/board.schema';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class TasksService {

@@ -18,8 +18,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Role } from 'src/common/enums/role.enum';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Role } from '../common/enums/role.enum';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
