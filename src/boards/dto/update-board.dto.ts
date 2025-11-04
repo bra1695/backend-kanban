@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsArray, IsMongoId, IsOptional } from 'class-validator';
 
-export class CreateBoardDto {
+export class UpdateBoardDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -17,5 +17,4 @@ export class CreateBoardDto {
 
   @IsMongoId()
   createdBy: string
-
 }

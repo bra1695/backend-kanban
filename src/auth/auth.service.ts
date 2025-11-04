@@ -3,9 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
-import { User, UserDocument } from '../users/schemas/user.schema';
+import { Role, User, UserDocument, UserType } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,10 +17,9 @@ export class AuthService {
     private mailService: MailService
   ) { }
 
-async register(data: Partial<User>) {
+async register(data: RegisterDto) {
   const user = new this.userModel(data);
 
-  // generate confirmation token (valid for 24h)
   const token = this.jwtService.sign(
     { sub: user._id },
     { secret: process.env.JWT_SECRET, expiresIn: '24h' },
@@ -27,9 +27,14 @@ async register(data: Partial<User>) {
 
   user.confirmationToken = token;
   user.isActive = false;
+  if(data.type==='organization'){
+  user.type=UserType.ADMIN;
+  }
+  else{
+    user.type=UserType.USER;
+  }
   await user.save();
 
-  // send confirmation email
   await this.mailService.sendAccountConfirmation(user.email, token);
 
   return { message: 'Registration successful. Please confirm your email.' };
@@ -63,18 +68,34 @@ async confirmAccount(token: string) {
   }
 }
 
-async login(username: string, password: string) {
-  const user = await this.userModel.findOne({ username });
-  if (!user) throw new UnauthorizedException('Invalid credentials');
+async login(identifier: string, password: string) {
+  // Find user by username OR email
+  const user = await this.userModel.findOne({
+    $or: [{ username: identifier }, { email: identifier }],
+  });
+
+  console.log("my users ",user);
+
+  if (!user) {
+    throw new UnauthorizedException('Invalid credentials');
+  }
 
   if (!user.isActive) {
     throw new UnauthorizedException('Please confirm your account first');
   }
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new UnauthorizedException('Invalid credentials');
+  if (!valid) {
+    throw new UnauthorizedException('Invalid credentials');
+  }
 
-  const payload = { sub: user._id, username: user.username, role: user.role, type: user.type };
+  const payload = {
+    sub: user._id,
+    username: user.username,
+    email: user.email,
+    type: user.type,
+  };
+
   return {
     access_token: this.jwtService.sign(payload),
   };

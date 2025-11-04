@@ -13,7 +13,15 @@ export class RolesGuard implements CanActivate {
     ]);
     if (!requiredRoles) return true;
 
-    const { user } = ctx.switchToHttp().getRequest();
-    return requiredRoles.includes(user.type); // check if user has required type
+    const request = ctx.switchToHttp().getRequest();
+    const user = request.user;
+
+    if (!user) {
+      // ❌ User not authenticated yet
+      return false;
+    }
+
+    // ✅ Safe check
+    return requiredRoles.includes(user.type);
   }
 }
