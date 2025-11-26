@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { Role } from '../../users/schemas/user.schema';
 
 export class RegisterDto {
   @IsString()
@@ -10,7 +11,7 @@ export class RegisterDto {
   username: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'address is required' })
+  @IsNotEmpty({ message: 'Address is required' })
   address: string;
 
   @IsString()
@@ -25,8 +26,11 @@ export class RegisterDto {
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @IsNotEmpty({ message: 'Password is required' })
   password: string;
-  
+
   @IsString()
   type: string;
-  
+
+  @IsOptional()
+  @IsEnum(Role, { message: 'Role must be one of: developer, designer, PM, SM' })
+  role?: Role;
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -17,28 +17,56 @@ export class AuthService {
     private mailService: MailService
   ) { }
 
-async register(data: RegisterDto) {
-  const user = new this.userModel(data);
+async register(data: any) {
+  try {
+    const user = new this.userModel(data);
 
-  const token = this.jwtService.sign(
-    { sub: user._id },
-    { secret: process.env.JWT_SECRET, expiresIn: '24h' },
-  );
+    const token = this.jwtService.sign(
+      { sub: user._id },
+      { secret: process.env.JWT_SECRET, expiresIn: '24h' },
+    );
 
-  user.confirmationToken = token;
-  user.isActive = false;
-  if(data.type==='organization'){
-  user.type=UserType.ADMIN;
+    user.confirmationToken = token;
+    user.isActive = false;
+    console.log("my user ",user);
+
+    if (data.type === 'organization') {
+      user.type = UserType.ADMIN;
+    } else {
+      user.type = UserType.USER;
+    }
+
+      try {
+    await user.save();
+  } catch (error) {
+    console.error('Error saving user:', error);
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Failed to save user data.',
+        error: error.message || error,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
   }
-  else{
-    user.type=UserType.USER;
+
+    await this.mailService.sendAccountConfirmation(user.email, token);
+
+    return { message: 'Registration successful. Please confirm your email.' };
+  } catch (error) {
+    console.error('Registration error:', error);
+
+    throw new HttpException(
+      {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An error occurred during registration.',
+        error: error.message || error,
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
-  await user.save();
-
-  await this.mailService.sendAccountConfirmation(user.email, token);
-
-  return { message: 'Registration successful. Please confirm your email.' };
 }
+
 
 async confirmAccount(token: string) {
   try {

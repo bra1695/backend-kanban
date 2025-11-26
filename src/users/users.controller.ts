@@ -13,6 +13,7 @@ import {
   UseInterceptors,
   UseGuards,
   Headers,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiConsumes, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
@@ -40,8 +41,10 @@ export class UsersController {
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   @ApiResponse({ status: 200, description: 'List of users retrieved successfully.' })
-  async findAll() {
-    return this.usersService.findAll();
+  async findAll(@Req() req: Request) {
+    // @ts-ignore
+    const loggedInUserId = req.user['id'];
+    return this.usersService.findAll(loggedInUserId);
   }
 
   @Get(':id')

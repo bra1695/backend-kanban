@@ -13,9 +13,12 @@ export class UsersService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async findAll() {
-    return this.userModel.find().populate('organization').exec();
-  }
+async findAll(loggedInUserId: string) {
+  return this.userModel
+    .find({ _id: { $ne: loggedInUserId } }) // exclude logged-in user
+    .populate('organization')
+    .exec();
+}
   async findByEmail(email: string): Promise<any> { return this.userModel.findOne({ email }).exec(); }
 
   async findById(id: string) {
